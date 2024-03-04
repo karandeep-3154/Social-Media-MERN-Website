@@ -22,7 +22,7 @@ function App() {
   console.log(theme);
   return (
     <div data-theme={theme} className="w-full min-h-[100vh]">
-    
+      {/*The data-theme attribute is used to set the theme of the application. It is set to the value of the theme property from the Redux store. Refer - https://dev.to/ditarahma08/dark-mode-with-css-variable-1p57*/}
       <Routes>
         <Route element={<Layout/>}>
           {/* Each route has an element prop which defines the component to render when the route matches.*/ }
