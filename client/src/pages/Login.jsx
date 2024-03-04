@@ -139,7 +139,7 @@ const Login = () => {
 
           <div className='mt-16 text-center'>
             <p className='text-white text-base'>
-              Connect with friedns & have share for fun
+              Connect with friends & have share for fun
             </p>
             <span className='text-sm text-white/80'>
               Share memories with friends and the world.
