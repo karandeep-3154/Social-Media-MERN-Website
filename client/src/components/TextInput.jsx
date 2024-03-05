@@ -17,6 +17,7 @@ const TextInput = React.forwardRef(({type, placeholder, styles, label, labelStyl
                 {...register}
                 aria-invalid={error ? "true" : "false"}
             />
+            
         </div>
 
         {error && (

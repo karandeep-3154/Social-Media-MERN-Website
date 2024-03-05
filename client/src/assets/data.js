@@ -1,4 +1,4 @@
-export const user = {
+export const dummyUser = {
   _id: "64df3c064180b81adfe41d4b",
   firstName: "Code",
   lastName: "Wave",

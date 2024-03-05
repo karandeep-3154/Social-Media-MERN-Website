@@ -1,3 +1,4 @@
 import NoProfile from "./userprofile.png";
 import BgImage from "./img.jpeg";
-export { NoProfile, BgImage };
+import {dummyUser} from './data.js'
+export { NoProfile, BgImage, dummyUser };
