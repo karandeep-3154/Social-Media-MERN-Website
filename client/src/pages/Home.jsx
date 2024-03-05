@@ -1,6 +1,6 @@
 import React from 'react'
 import {useSelector} from 'react-redux'
-import {ProfileCard, TopBar} from '../components';
+import {FriendsCard, ProfileCard, TopBar} from '../components';
 
 const Home = () => {
 
@@ -15,7 +15,9 @@ const Home = () => {
           <ProfileCard user={user}/>
         </div>
         {/*Center*/}       
-        <div></div>
+        <div>
+          <FriendsCard friends={user?.friends}/>
+        </div>
         {/*Right*/}       
         <div></div>
       </div>
