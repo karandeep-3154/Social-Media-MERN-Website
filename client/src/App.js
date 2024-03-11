@@ -35,8 +35,6 @@ function App() {
         <Route path='/login' element={<Login/>}/>
         <Route path='/reset-password' element={<ResetPassword/>}/>
 
-
-
       </Routes>
 
     </div>
