@@ -179,3 +179,76 @@ console.log(password);
     res.status(404).json({ message: error.message });
   }
 };
+
+export const getUser = async (req, res, next) => {
+  try {
+    const { userId } = req.body.user;
+    const { id } = req.params;
+
+    const user = await Users.findById(id ?? userId).populate({
+      path: "friends",
+      select: "-password",
+    });//Putting User's Friends info excluding Password before Returning this User
+//doing this as if user doesnot gives id in params like if he wants to get his own profile then, this extracted id from his token(done in authMiddleware) would give his id and will help in retreiving his profile
+    if (!user) {
+      return res.status(200).send({
+        message: "User Not Found",
+        success: false,
+      });
+    }
+
+    user.password = undefined;
+
+    res.status(200).json({
+      success: true,
+      user: user,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "auth error",
+      success: false,
+      error: error.message,
+    });
+  }
+};
+
+export const updateUser = async (req, res, next) => {
+  try {
+    const { firstName, lastName, location, profileUrl, profession } = req.body;
+
+    if (!(firstName || lastName || contact || profession || location)) {
+      next("Please provide all required fields");
+      return;
+    }
+
+    const { userId } = req.body.user;
+
+    const updateUser = {
+      firstName,
+      lastName,
+      location,
+      profileUrl,
+      profession,
+      _id: userId,
+    };
+    const user = await Users.findByIdAndUpdate(userId, updateUser, {
+      new: true,
+    });
+
+    await user.populate({ path: "friends", select: "-password" });//Putting User's Friends info excluding Password before Returning this User
+    const token = createJWT(user?._id);
+
+    user.password = undefined;
+
+    res.status(200).json({
+      sucess: true,
+      message: "User updated successfully",
+      user,
+      token,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
+  }
+};

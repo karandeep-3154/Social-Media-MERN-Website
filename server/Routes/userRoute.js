@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
-import { changePassword, requestPasswordReset, resetPassword, verifyEmail } from "../Controllers/userController.js";
+import { changePassword, getUser, requestPasswordReset, resetPassword, verifyEmail, updateUser } from "../Controllers/userController.js";
+import userAuth from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
 const __dirname = path.resolve(path.dirname(""));
@@ -23,5 +24,9 @@ router.get('/resetpassword', (req, res) => {
 
 router.post("/reset-password", changePassword);
 //If everything was okay, the User is finally able to change the password
+
+// user routes
+router.post("/get-user/:id?", userAuth, getUser);
+router.put("/update-user", userAuth, updateUser);
 
 export default router;
