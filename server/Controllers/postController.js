@@ -60,7 +60,7 @@ So, this expression is searching for posts where the description field matches t
     const posts = await Posts.find(search ? searchPostQuery : {})
       .populate({
         path: "userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl ",
       })
       .sort({ _id: -1 });
 
@@ -106,12 +106,12 @@ export const getPost = async (req, res, next) => {
 
     const post = await Posts.findById(id).populate({
       path: "userId",
-      select: "firstName lastName location profileUrl -password",
+      select: "firstName lastName location profileUrl ",
     }).populate({
       path: "comments",
       populate: {
         path: "userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl ",
       },
       options: {
         sort: "-_id",
@@ -120,7 +120,7 @@ export const getPost = async (req, res, next) => {
       path: "comments",
       populate: {
         path: "replies.userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl ",
       },
     });
 
@@ -152,7 +152,7 @@ export const getUserPost = async (req, res, next) => {
     const post = await Posts.find({ userId: id })
       .populate({
         path: "userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl",
       })
       .sort({ _id: -1 });
 
@@ -174,11 +174,11 @@ export const getComments = async (req, res, next) => {
     const postComments = await Comments.find({ postId })
       .populate({
         path: "userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl ",
       })
       .populate({
         path: "replies.userId",
-        select: "firstName lastName location profileUrl -password",
+        select: "firstName lastName location profileUrl ",
       })
       .sort({ _id: -1 });
 
