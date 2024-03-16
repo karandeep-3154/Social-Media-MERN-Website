@@ -58,7 +58,7 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
             data: data || {},
             method: "POST"
         })
-        
+        console.log(res)
         dispatch(SetPosts(res?.data));
         return;
 

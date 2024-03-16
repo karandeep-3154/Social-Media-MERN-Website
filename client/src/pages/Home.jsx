@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   CustomButton,
   EditProfile,
@@ -10,7 +10,8 @@ import {
   TextInput,
   TopBar,
 } from "../components";
-import { suggest, requests, posts } from "../assets/data";
+import {apiRequest, fetchPosts, handleFileUpload} from "../Utils/index.js";
+import { suggest, requests } from "../assets/data";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsFiletypeGif, BsPersonFillAdd } from "react-icons/bs";
@@ -20,6 +21,7 @@ const Home = () => {
 
   const { user, edit } = useSelector((state) => state.user);
   const [friendRequest, setFriendRequest] = useState(requests);
+  const {posts} = useSelector((state) => state.posts);
   const [suggestedFriends, setSuggestedFriends] = useState(suggest);
   const [errMsg, setErrMsg] = useState("");
   const [file, setFile] = useState(null);
@@ -29,10 +31,76 @@ const Home = () => {
   const {
     register,
     handleSubmit,
+    reset,
     formState: { errors },
   } = useForm();
 
-  const handlePostSubmit = async (data) => {};
+  const dispatch = useDispatch();
+  
+
+  const fetchPost = async() => {
+
+    await fetchPosts(user?.token, dispatch);
+    setLoading(false);
+
+  }
+
+  const handlePostSubmit = async (data) => {
+
+    setPosting(true);
+    setErrMsg("");
+
+    try {
+      
+      const uri = file && (await handleFileUpload(file));
+      const newData = uri ? {...data, image:uri} : data;
+      //If an image is existing in post then, we append that image to the post data which already includes the post info such as description, user, and time.
+
+      const res = await apiRequest({
+        url: "posts/create-post",
+        data: newData,
+        token: user?.token,
+        method: "POST"
+      });
+
+      console.log(res);
+
+            if(res?.status === 'failed'){
+        setErrMsg(res);
+      }
+      else{
+        setErrMsg("");
+        reset({description:""});
+        setFile(null);
+        await fetchPost();
+      }
+      
+      setPosting(false);
+
+    } catch (error) {
+      console.log(error)
+      setPosting(false);
+      setErrMsg(error);
+    }
+
+  };
+  const handleLikePost = async() => {}
+  const handleDelete = async() => {}
+  const fetchFriendRequests = async() => {}
+  const fetchSuggestedFriends = async() => {}
+  const handleFriendRequest = async() => {}
+  const acceptFriendRequest = async() => {}
+  const getUser = async() => {}
+
+useEffect(() => {
+  setLoading(true);
+  getUser();
+  fetchPost();
+  fetchFriendRequests();
+  fetchSuggestedFriends();
+}, []);
+
+  //useEffect hook here is to set the loading state to true initially and then fetch user data, posts, friend requests, and suggested friends from the server when the component renders.
 
   return (
     <>
