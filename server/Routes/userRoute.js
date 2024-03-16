@@ -11,7 +11,7 @@ router.get("/verified", (req, res) => {
   res.sendFile(path.join(__dirname, "./Views", "index.html"));
 });
 
-router.get('/request-passwordreset', requestPasswordReset)
+router.post('/request-passwordreset', requestPasswordReset)
 //User Requests for Password Reset and User gets Email for Reset Password
 
 router.get('/reset-password/:userId/:token', resetPassword);

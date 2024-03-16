@@ -72,45 +72,36 @@ export const verifyEmail = async (req, res) => {
   }
 };
 
+
 export const requestPasswordReset = async (req, res) => {
-  
   try {
     
-    const {email} = req.body;
-    const user = await Users.findOne({ email: email });
-// console.log(email)
-// console.log("hellojio", user.email, user.firstName, user.lastName);
+    const { email } = req.body;
+    const user = await Users.findOne({ email });
 
-    if(!user){
-      res.status(400).send('User not found');
-      return;
+    if (!user) {
+      return res.status(201).json({
+        status: "FAILED",
+        message: "Email address not found.",
+      });
     }
 
-    const alreadyPendingRequest = PasswordReset.findOne({ email });
-
-    if(alreadyPendingRequest){
-
-      if(alreadyPendingRequest.expiresAt > Date.now()){
-        res.status(201).json({
-          success: 'PENDING',
-          message: 'Password Reset Link Already Sent. Check your email',
+    const existingRequest = await PasswordReset.findOne({ email });
+    if (existingRequest) {
+      if (existingRequest.expiresAt > Date.now()) {
+        return res.status(201).json({
+          status: "PENDING",
+          message: "Reset password link has already been sent to your email.",
         });
       }
-      else
-        PasswordReset.findOneAndDelete({ email });
-      
+      await PasswordReset.findOneAndDelete({ email });
     }
-
-    await resetPasswordLink(user,res);
-
+    await resetPasswordLink(user, res);
+  } catch (error) {
+    console.log(error);
+    res.status(404).json({ message: error.message });
   }
-  
-  catch (error) {
-    console.log(error)
-    res.status(400).send(error);
-  }
-
-}
+};
 
 
 export const resetPassword = async (req, res) => {
