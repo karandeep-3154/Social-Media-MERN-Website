@@ -4,6 +4,9 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialState = {
     user: JSON.parse(window?.localStorage.getItem('user')) ,
     edit: false
+
+/* We have a EditProfile component so the edit state determines whether the modal should be open or not. When the edit button is clicked in ProfileCard.jsx edit is set to true and Modal gets opened and after updating the profile, in Editprofile.js, this edit is again set as False determining the Modal to get Closed */
+
 };
 
 const userSlice = createSlice({
