@@ -10,7 +10,7 @@ import {
   TextInput,
   TopBar,
 } from "../components";
-import {apiRequest, fetchPosts, handleFileUpload} from "../Utils/index.js";
+import {apiRequest, fetchPosts, handleFileUpload, likePost} from "../Utils/index.js";
 import { suggest, requests } from "../assets/data";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
@@ -84,7 +84,13 @@ const Home = () => {
     }
 
   };
-  const handleLikePost = async() => {}
+  const handleLikePost = async(uri) => {
+    console.log('clicked', uri)
+
+    await likePost({uri:uri, token:user?.token});
+    await fetchPost();
+
+  }
   const handleDelete = async() => {}
   const fetchFriendRequests = async() => {}
   const fetchSuggestedFriends = async() => {}
@@ -222,8 +228,8 @@ useEffect(() => {
                   key={post?._id}
                   post={post}
                   user={user}
-                  deletePost={() => {}}
-                  likePost={() => {}}
+                  deletePost={handleDelete}
+                  likePost={handleLikePost}
                 />
               ))
             ) : (

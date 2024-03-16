@@ -9,7 +9,7 @@ export const API = axios.create({
 
 export const apiRequest = async({url, token, data, method}) => {
     try {
-        
+        console.log(url, method);
         const result = await API(url, {
             method: method  || "GET",
             data: data,
@@ -58,7 +58,7 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
             data: data || {},
             method: "POST"
         })
-        console.log(res)
+        // console.log(res)
         dispatch(SetPosts(res?.data));
         return;
 
@@ -68,14 +68,16 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
 }
 
 export const likePost = async({uri, token}) => {
-
+console.log(uri)
     try {
         
         const res = await apiRequest({
             url: uri,
             token: token,
             method: "POST"
-        });
+        })
+        
+        // console.log(res)
 
     } catch (error) {
         console.log(error)
