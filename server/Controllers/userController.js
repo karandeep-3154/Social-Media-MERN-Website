@@ -1,6 +1,7 @@
 import Verification from "../Models/emailVerification.js";
 import { compareString, createJWT, hashString } from "../Utils/index.js";
 import Users from "../Models/userModel.js";
+import friendRequest from "../Models/friendRequest.js";
 import PasswordReset from "../Models/passwordReset.js";
 import { resetPasswordLink } from "../Utils/sendEmail.js";
 
@@ -244,13 +245,13 @@ export const updateUser = async (req, res, next) => {
   }
 };
 
-export const friendRequest = async (req, res, next) => {
+export const FriendRequest = async (req, res, next) => {
   try {
     const { userId } = req.body.user;
 
     const { requestTo } = req.body;
 
-    const requestExist = await FriendRequest.findOne({
+    const requestExist = await friendRequest.findOne({
       requestFrom: userId,
       requestTo,
     });
@@ -260,7 +261,7 @@ export const friendRequest = async (req, res, next) => {
       return;
     }
 
-    const accountExist = await FriendRequest.findOne({
+    const accountExist = await friendRequest.findOne({
       requestFrom: requestTo,
       requestTo: userId,
     });
@@ -270,7 +271,7 @@ export const friendRequest = async (req, res, next) => {
       return;
     }
 
-    const newRes = await FriendRequest.create({
+    const newRes = await friendRequest.create({
       requestTo,
       requestFrom: userId,
     });
@@ -292,13 +293,13 @@ export const getFriendRequest = async (req, res) => {
   try {
     const { userId } = req.body.user;
 
-    const request = await FriendRequest.find({
+    const request = await friendRequest.find({
       requestTo: userId,
       requestStatus: "Pending",
     })
       .populate({
         path: "requestFrom",
-        select: "firstName lastName profileUrl profession -password",
+        select: "firstName lastName profileUrl profession ",
       })
       .limit(10)
       .sort({
@@ -326,14 +327,14 @@ export const acceptRequest = async (req, res, next) => {
 
     const { rid, status } = req.body;
 
-    const requestExist = await FriendRequest.findById(rid);
+    const requestExist = await friendRequest.findById(rid);
 
     if (!requestExist) {
       next("No Friend Request Found.");
       return;
     }
 
-    const newRes = await FriendRequest.findByIdAndUpdate(
+    const newRes = await friendRequest.findByIdAndUpdate(
       { _id: rid },
       { requestStatus: status }
     );
@@ -390,22 +391,46 @@ export const profileViews = async (req, res, next) => {
     });
   }
 };
-
 export const suggestedFriends = async (req, res) => {
   try {
     const { userId } = req.body.user;
 
-    let queryObject = {};
+    // Get IDs of users who have sent friend requests to the current user
+    const friendRequestsReceived = await friendRequest.find({
+      requestTo: userId,
+      requestStatus: "Pending",
+    }).distinct("requestFrom");
+const friendRequestsReceived2 = await friendRequest.find({
+      requestTo: userId,
+      requestStatus: "Accepted",
+    }).distinct("requestFrom");
 
-    queryObject._id = { $ne: userId };
+    // Get IDs of users to whom the current user has sent friend requests
+    const friendRequestsSent = await friendRequest.find({
+      requestFrom: userId,
+      requestStatus: "Pending",
+    }).distinct("requestTo");
+    const friendRequestsSent2 = await friendRequest.find({
+      requestFrom: userId,
+      requestStatus: "Accepted",
+    }).distinct("requestTo");
 
-    queryObject.friends = { $nin: userId };
+    // Combine the arrays of user IDs to exclude from suggested friends
+    const excludedUsers = [...friendRequestsReceived, ...friendRequestsReceived2, ...friendRequestsSent, ...friendRequestsSent2, userId];
 
-    let queryResult = Users.find(queryObject)
-      .limit(15)
-      .select("firstName lastName profileUrl profession -password");
+    // Get IDs of users who are already friends with the current user
+    // const currentUser = await Users.findById(userId).select("friends");
+    // const friendIds = currentUser.friends.map(friend => friend.toString());
 
-    const suggestedFriends = await queryResult;
+    // Add already friends to the excluded users list
+    // excludedUsers.push(...friendIds);
+
+    // Query users excluding the current user, users with pending friend requests, and already friends
+    const suggestedFriends = await Users.find({
+      _id: { $nin: excludedUsers },
+    })
+    .limit(15)
+    .select("firstName lastName profileUrl profession");
 
     res.status(200).json({
       success: true,

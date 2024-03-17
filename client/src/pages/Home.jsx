@@ -10,19 +10,19 @@ import {
   TextInput,
   TopBar,
 } from "../components";
-import {apiRequest, fetchPosts, handleFileUpload, likePost} from "../Utils/index.js";
-import { suggest, requests } from "../assets/data";
+import {apiRequest, deletePost, fetchPosts, getUserInfo, handleFileUpload, likePost, sendFriendRequest} from "../Utils/index.js";
 import { Link } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsFiletypeGif, BsPersonFillAdd } from "react-icons/bs";
 import { BiImages, BiSolidVideo } from "react-icons/bi";
 import { useForm } from "react-hook-form";
+import { userLogin } from "../redux/userSlice.js";
 const Home = () => {
 
   const { user, edit } = useSelector((state) => state.user);
-  const [friendRequest, setFriendRequest] = useState(requests);
+  const [friendRequest, setFriendRequest] = useState([]);
   const {posts} = useSelector((state) => state.posts);
-  const [suggestedFriends, setSuggestedFriends] = useState(suggest);
+  const [suggestedFriends, setSuggestedFriends] = useState([]);
   const [errMsg, setErrMsg] = useState("");
   const [file, setFile] = useState(null);
   const [posting, setPosting] = useState(false);
@@ -37,6 +37,13 @@ const Home = () => {
 
   const dispatch = useDispatch();
   
+  const getUser = async() => {
+
+    const res = await getUserInfo(user?.token);
+    const newData = {token: user?.token, ...res}
+    dispatch(userLogin(newData));
+
+  }
 
   const fetchPost = async() => {
 
@@ -63,7 +70,6 @@ const Home = () => {
         method: "POST"
       });
 
-      console.log(res);
 
             if(res?.status === 'failed'){
         setErrMsg(res);
@@ -85,18 +91,88 @@ const Home = () => {
 
   };
   const handleLikePost = async(uri) => {
-    console.log('clicked', uri)
 
     await likePost({uri:uri, token:user?.token});
     await fetchPost();
 
   }
-  const handleDelete = async() => {}
-  const fetchFriendRequests = async() => {}
-  const fetchSuggestedFriends = async() => {}
-  const handleFriendRequest = async() => {}
-  const acceptFriendRequest = async() => {}
-  const getUser = async() => {}
+  const handleDelete = async(id) => {
+
+    await deletePost(id, user?.token);
+    await fetchPost();  
+
+  }
+  const fetchFriendRequests = async() => {
+
+    try {
+          const res = await apiRequest({
+            url: "/users/get-friend-request/",
+            method: "POST",
+            token: user?.token,
+          });
+
+          setFriendRequest(res?.data);
+        } catch (error) {
+          console.log(error);
+        }
+
+  }
+  const fetchSuggestedFriends = async() => {
+
+    try {
+          const res = await apiRequest({
+            url: "/users/suggested-friends/",
+            token: user?.token,
+            method: "POST",
+          });
+          setSuggestedFriends(res?.data);
+        } catch (error) {
+          console.log(error);
+        }
+
+  }
+  const handleFriendRequest = async(id) => {
+
+    try {
+      const res = await sendFriendRequest(user.token, id);
+        await fetchSuggestedFriends();
+        await fetchFriendRequests();
+        getUser();
+      } 
+    catch (error) {
+    console.log(error);
+      }
+  }
+  
+  const acceptFriendRequest = async(id, status) => {
+
+    try {
+      
+      const res = await apiRequest({
+        url: "/users/accept-request/",
+        token: user?.token,
+        method: "POST",
+        data: {
+          rid: id,
+          status
+        }
+      });
+
+        await fetchSuggestedFriends();
+        await fetchFriendRequests();
+      getUser();
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+useEffect(() => {
+  setLoading(true);
+  getUser();
+  fetchPost();
+  fetchFriendRequests();
+  fetchSuggestedFriends();
+}, []);
 
 useEffect(() => {
   setLoading(true);
@@ -105,6 +181,7 @@ useEffect(() => {
   fetchFriendRequests();
   fetchSuggestedFriends();
 }, [edit]);
+
 
 //Edit is a state in userSlice which is set to true when the user clicks the edit button in ProfileCard. When the edit state changes, the useEffect hook will run again and fetch the user data from the server. For example - when user updates profile picture then after updating, edit will become false, so if we again fetch posts, the post which this user itself had posted will come with updated profile picture otherwise it will come with the old profile picture.
 
@@ -244,8 +321,9 @@ useEffect(() => {
             {/* FRIEND REQUEST */}
             <div className='w-full bg-primary shadow-sm rounded-lg px-6 py-5'>
               <div className='flex items-center justify-between text-xl text-ascent-1 pb-2 border-b border-[#66666645]'>
-                <span> Friend Request</span>
+                <span> Friend Requests</span>
                 <span>{friendRequest?.length}</span>
+                {(!friendRequest) && <span>0</span>}
               </div>
 
               <div className='w-full flex flex-col gap-4 pt-4'>
@@ -274,10 +352,12 @@ useEffect(() => {
                       <CustomButton
                         title='Accept'
                         containerStyles='bg-[#0444a4] text-xs text-white px-1.5 py-1 rounded-full'
+                        onClick={() => acceptFriendRequest(_id, "Accepted")}
                       />
                       <CustomButton
                         title='Deny'
                         containerStyles='border border-[#666] text-xs text-ascent-1 px-1.5 py-1 rounded-full'
+                        onClick={() => acceptFriendRequest(_id, "Denied")}
                       />
                     </div>
                   </div>
@@ -319,7 +399,7 @@ useEffect(() => {
                     <div className='flex gap-1'>
                       <button
                         className='bg-[#0444a430] text-sm text-white p-1 rounded'
-                        onClick={() => {}}
+                        onClick={() => {handleFriendRequest(friend._id)}}
                       >
                         <BsPersonFillAdd size={20} className='text-[#0f52b6]' />
                       </button>

@@ -39,6 +39,7 @@ const Register = () => {
 
       if(res?.status === "failed") {
         setErrMsg(res);
+        setIsSubmitting(false);
       }
 
       else{
