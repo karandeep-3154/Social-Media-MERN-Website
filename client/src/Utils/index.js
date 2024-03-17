@@ -17,7 +17,7 @@ export const apiRequest = async({url, token, data, method}) => {
                 Authorization: token ? `Bearer ${token}`: ""
             }
         });
-        
+        // console.log(result.data);   
         return result.data;
 
     } catch (error) {
@@ -67,7 +67,7 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
 }
 
 export const likePost = async({uri, token}) => {
-console.log(uri)
+// console.log(uri)
     try {
         
         const res = await apiRequest({
