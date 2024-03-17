@@ -441,3 +441,40 @@ const friendRequestsReceived2 = await friendRequest.find({
     res.status(404).json({ message: error.message });
   }
 };
+
+export const checkFriends = async (req, res) => {
+
+  const { from_id, to_id } = req.body;
+// console.log(from_id, to_id);
+  const requestExist = await friendRequest.findOne({
+    requestFrom: from_id,
+    requestTo: to_id,
+  });
+
+  if (requestExist) {
+    res.status(200).json({
+      success: true,
+      message: "Yes",
+    });
+    return;
+  }
+
+  const accountExist = await friendRequest.findOne({
+    requestFrom: to_id,
+    requestTo: from_id,
+  });
+
+  if (accountExist) {
+    res.status(200).json({
+      success: true,
+      message: "Yes",
+    });
+    return;
+  }
+
+  res.status(200).json({
+    success: false,
+    message: "No",
+  });
+
+}

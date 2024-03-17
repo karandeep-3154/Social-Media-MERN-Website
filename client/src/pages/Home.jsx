@@ -10,8 +10,8 @@ import {
   TextInput,
   TopBar,
 } from "../components";
-import {apiRequest, deletePost, fetchPosts, getUserInfo, handleFileUpload, likePost, sendFriendRequest} from "../Utils/index.js";
-import { Link } from "react-router-dom";
+import {apiRequest, deletePost, fetchPosts, getUserInfo, handleFileUpload, handleView, likePost, sendFriendRequest} from "../Utils/index.js";
+import { useNavigate } from "react-router-dom";
 import { NoProfile } from "../assets";
 import { BsFiletypeGif, BsPersonFillAdd } from "react-icons/bs";
 import { BiImages, BiSolidVideo } from "react-icons/bi";
@@ -188,6 +188,7 @@ const Home = () => {
 
 // When the component mounts or when the edit state changes, the useEffect runs.
 
+  const navigate = useNavigate();
   return (
     <>
     <div className='home w-full px-0 lg:px-10 pb-20 2xl:px-40 bg-bgColor lg:rounded-lg h-screen overflow-hidden'>
@@ -328,9 +329,12 @@ const Home = () => {
               <div className='w-full flex flex-col gap-4 pt-4'>
                 {friendRequest?.map(({ _id, requestFrom: from }) => (
                   <div key={_id} className='flex items-center justify-between'>
-                    <Link
-                      to={"/profile/" + from._id}
+                   <div
+
                       className='w-full flex gap-4 items-center cursor-pointer'
+                      onClick={()=>{
+                  handleView(from, user);
+                        navigate("/profile/" + from._id)}}
                     >
                       <img
                         src={from?.profileUrl ?? NoProfile}
@@ -345,7 +349,7 @@ const Home = () => {
                           {from?.profession ?? "No Profession"}
                         </span>
                       </div>
-                    </Link>
+                    </div>
 
                     <div className='flex gap-1'>
                       <CustomButton
@@ -375,11 +379,15 @@ const Home = () => {
                     className='flex items-center justify-between'
                     key={friend._id}
                   >
-                    <Link
-                      to={"/profile/" + friend?._id}
+                    <div
                       key={friend?._id}
+                      
+                      onClick={()=>{
+                  handleView(friend, user);
+                        navigate("/profile/" + friend?._id)}}
                       className='w-full flex gap-4 items-center cursor-pointer'
                     >
+
                       <img
                         src={friend?.profileUrl ?? NoProfile}
                         alt={friend?.firstName}
@@ -393,7 +401,7 @@ const Home = () => {
                           {friend?.profession ?? "No Profession"}
                         </span>
                       </div>
-                    </Link>
+                    </div>
 
                     <div className='flex gap-1'>
                       <button

@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
@@ -14,10 +14,48 @@ import moment from "moment";
 
 import { NoProfile } from "../assets";
 import { UpdateProfile } from "../redux/userSlice";
+import EditProfile from "./EditProfile";
+import { apiRequest, sendFriendRequest } from "../Utils";
 
 const ProfileCard = ({ user }) => {
   const { user: data, edit } = useSelector((state) => state.user);
+  const [mutualFriends, setMutualFriends] = useState("No");
   const dispatch = useDispatch();
+
+   const handleFriendRequest = async() => {
+
+    try {
+      const res = await sendFriendRequest(data.token, user._id);
+      checkFriendRequestSent();
+      } 
+    catch (error) {
+    console.log(error);
+      }
+  }
+
+  const checkFriendRequestSent = async() => {
+    try {
+      // console.log(user._id, data._id);
+      const res = await apiRequest({
+        url: "/users/check-friend-request-sent/",
+        token: data.token,
+        method: "POST",
+        data: {
+          from_id: user._id,
+          to_id: data._id
+        }
+      });
+      setMutualFriends(res.message);
+      // console.log(res);
+      } 
+    catch (error) {
+    console.log(error);
+      }
+  }
+
+  useEffect(() => {
+    checkFriendRequestSent();
+  }, [user]);
 
   return (
     <div>
@@ -41,6 +79,9 @@ const ProfileCard = ({ user }) => {
           </Link>
 
           <div className=''>
+          {/* {console.log(data._id, 'dataid')}
+          {console.log(user._id, 'user')} */}
+
             {user?._id === data?._id ? (
               <LiaEditSolid
                 size={22}
@@ -48,12 +89,14 @@ const ProfileCard = ({ user }) => {
                 onClick={() => dispatch(UpdateProfile(true))}
               />
             ) : (
+              mutualFriends === 'No' ? (
               <button
                 className='bg-[#0444a430] text-sm text-white p-1 rounded'
-                onClick={() => {}}
+                onClick={() => {handleFriendRequest();}}
               >
+              
                 <BsPersonFillAdd size={20} className='text-[#0f52b6]' />
-              </button>
+              </button>) : (<div></div>)
             )}
           </div>
         </div>
@@ -76,7 +119,7 @@ const ProfileCard = ({ user }) => {
           </p>
 
           <div className='flex items-center justify-between'>
-            <span className='text-ascent-2'>Who viewed your profile</span>
+            <span className='text-ascent-2'>Viewers of profile</span>
             <span className='text-ascent-1 text-lg'>{user?.views?.length}</span>
           </div>
 
@@ -109,6 +152,7 @@ const ProfileCard = ({ user }) => {
           </div>
         </div>
       </div>
+      {edit && <EditProfile />}
     </div>
   );
 };

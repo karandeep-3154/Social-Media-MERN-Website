@@ -1,6 +1,6 @@
 import express from "express";
 import path from "path";
-import { changePassword, getUser, requestPasswordReset, resetPassword, verifyEmail, updateUser, FriendRequest, getFriendRequest, acceptRequest, profileViews, suggestedFriends } from "../Controllers/userController.js";
+import { changePassword, getUser, requestPasswordReset, checkFriends, resetPassword, verifyEmail, updateUser, FriendRequest, getFriendRequest, acceptRequest, profileViews, suggestedFriends } from "../Controllers/userController.js";
 import userAuth from "../Middleware/authMiddleware.js";
 
 const router = express.Router();
@@ -41,6 +41,7 @@ router.post("/profile-view", userAuth, profileViews);
 
 //suggested friends
 router.post("/suggested-friends", userAuth, suggestedFriends);
+router.post("/check-friend-request-sent", userAuth, checkFriends);
 
 
 export default router;

@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import moment from "moment";
 import { NoProfile } from "../assets";
 import { BiComment, BiLike, BiSolidLike } from "react-icons/bi";
@@ -9,26 +9,28 @@ import TextInput from "./TextInput";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
 // import { postComments } from "../assets/data";
-import { apiRequest } from "../Utils";
+import { apiRequest, handleView } from "../Utils";
 
 const ReplyCard = ({ reply, user, handleLike }) => {
+  const navigate = useNavigate();
   return (
     <div className='w-full py-3'>
-      <div className='flex gap-3 items-center mb-1'>
-        <Link to={"/profile/" + reply?.userId?._id}>
-          <img
+      <div className='flex gap-3 items-center cursor-pointer mb-1'>
+        
+          <img onClick={()=>{ 
+                  handleView(reply.userId, user);
+            navigate("/profile/" + reply?.userId?._id)}}
             src={reply?.userId?.profileUrl ?? NoProfile}
             alt={reply?.userId?.firstName}
             className='w-10 h-10 rounded-full object-cover'
           />
-        </Link>
 
         <div>
-          <Link to={"/profile/" + reply?.userId?._id}>
-            <p className='font-medium text-base text-ascent-1'>
+            <p className='font-medium text-base cursor-pointer text-ascent-1 ' onClick={()=>{
+                  handleView(reply.userId, user);
+              navigate("/profile/" + reply?.userId?._id)}}>
               {reply?.userId?.firstName} {reply?.userId?.lastName}
             </p>
-          </Link>
           <span className='text-ascent-2 text-sm'>
             {moment(reply?.createdAt).fromNow()}
           </span>
@@ -199,28 +201,57 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
     await getComments(post?._id);
   };
 
+  const handleView = async(userId) => {
+
+//userId is id of user whose profile current user is trying to open
+    try {
+
+      if(userId._id == user._id)
+      return;
+
+      const res = await apiRequest({
+        url: "/users/profile-view",
+        method: "POST",
+        data: {id: userId, user},
+        token: user?.token
+      });
+
+      // console.log(res);
+
+    } catch (error) {
+      console.log(error);
+    }
+
+  }
+  const navigate = useNavigate();
+
   return (
     <div className='mb-2 bg-primary p-4 rounded-xl'>
-      <div className='flex gap-3 items-center mb-2'>
-        <Link to={"/profile/" + post?.userId?._id}>
-          <img
+      <div className='flex gap-3 items-center mb-2 cursor-pointer'>
+          <img onClick={()=>{
+                  handleView(post.userId, user);
+            navigate("/profile/" + post?.userId?._id)}}
             src={post?.userId?.profileUrl ?? NoProfile}
             alt={post?.userId?.firstName}
-            className='w-14 h-14 object-cover rounded-full'
+            className='w-12 h-12 md:w-14 md:h-14 object-cover rounded-full'
           />
-        </Link>
 
         <div className='w-full flex justify-between'>
           <div className=''>
-            <Link to={"/profile/" + post?.userId?._id}>
-              <p className='font-medium text-lg text-ascent-1'>
+              <p className='font-medium text-lg text-ascent-1 cursor-pointer' 
+                onClick={() => {
+                  handleView(post.userId, user);
+                  
+                  navigate("/profile/" + post?.userId?._id); }}>
                 {post?.userId?.firstName} {post?.userId?.lastName}
               </p>
-            </Link>
             <span className='text-ascent-2'>{post?.userId?.location}</span>
+            <span className='md:hidden flex text-ascent-2 text-xs'>
+            {moment(post?.createdAt ?? "2023-05-25").fromNow()}
+          </span>
           </div>
 
-          <span className='text-ascent-2'>
+          <span className='hidden md:flex text-ascent-2'>
             {moment(post?.createdAt ?? "2023-05-25").fromNow()}
           </span>
         </div>
@@ -309,19 +340,23 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
             comments?.map((comment) => (
               <div className='w-full py-2' key={comment?._id}>
                 <div className='flex gap-3 items-center mb-1'>
-                  <Link to={"/profile/" + comment?.userId?._id}>
                     <img
                       src={comment?.userId?.profileUrl ?? NoProfile}
                       alt={comment?.userId?.firstName}
-                      className='w-10 h-10 rounded-full object-cover'
+                      className='w-10 h-10 rounded-full object-cover cursor-pointer' 
+                      onClick={()=>{
+                  handleView(comment.userId, user);
+                        navigate("/profile/" + comment?.userId?._id)}
+                      }
                     />
-                  </Link>
                   <div>
-                    <Link to={"/profile/" + comment?.userId?._id}>
-                      <p className='font-medium text-base text-ascent-1'>
+                      <p className='font-medium text-base text-ascent-1 cursor-pointer'  
+                      onClick={()=>{
+                  handleView(comment.userId, user);
+                        navigate("/profile/" + comment?.userId?._id)}}
+>
                         {comment?.userId?.firstName} {comment?.userId?.lastName}
                       </p>
-                    </Link>
                     <span className='text-ascent-2 text-sm'>
                       {moment(comment?.createdAt ?? "2023-05-25").fromNow()}
                     </span>
