@@ -8,7 +8,7 @@ import { AiOutlineInteraction } from "react-icons/ai";
 import { ImConnection } from "react-icons/im";
 import { CustomButton, Loading, TextInput } from "../components";
 import { BgImage } from "../assets";
-import { apiRequest } from "../Utils";
+import { apiRequest, handleFileUpload } from "../Utils";
 
 const Register = () => {
 
@@ -22,18 +22,26 @@ const Register = () => {
   });
 
   const [errMsg, setErrMsg] = useState("");
+  const [picture, setPicture] = useState(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const dispatch = useDispatch();
+
+  const handleSelect = (e) => {
+    setPicture(e.target.files[0]);
+  };
 
   const onSubmit = async (data) => {
     
     setIsSubmitting(true);
+    const { firstName, lastName, email, password } = data;
+    const uri = picture && (await handleFileUpload(picture));
+    
 
     try {
       
       const res = await apiRequest({
         url: '/auth/register',
-        data: data,
+        data: { firstName, lastName, email, password, profileUrl: uri ? uri : "" },
         method: 'POST'
       })
 
@@ -46,7 +54,7 @@ const Register = () => {
         setErrMsg(res);
         setTimeout(() =>{
           window.location.replace('/login');
-        }, 5000)
+        }, 1000)
         setIsSubmitting(false);
       }
 
@@ -59,15 +67,15 @@ const Register = () => {
 
   return (
     <div className='bg-bgColor w-full h-[100vh] flex items-center justify-center p-6'>
-      <div className='w-full md:w-2/3 h-fit lg:h-full 2xl:h-5/6 py-8 lg:py-0 flex flex-row-reverse bg-primary rounded-xl overflow-hidden shadow-xl'>
-        {/* LEFT */}
+      <div className='w-full md:w-2/3 h-fit lg:h-full 2xl:h-400px py-8 lg:py-0 flex flex-row-reverse bg-primary rounded-xl overflow-hidden shadow-xl'>
+        {/* RIGHT */}
         <div className='w-full lg:w-1/2 h-full p-10 2xl:px-20 flex flex-col justify-center '>
-          <div className='w-full flex gap-2 items-center mb-6'>
+          <div className='w-full flex gap-2 items-center mb-4'>
             <div className='p-2 bg-[#065ad8] rounded text-white'>
               <TbSocial />
             </div>
             <span className='text-2xl text-[#065ad8] font-semibold'>
-              ShareFun
+              Connectify
             </span>
           </div>
 
@@ -76,7 +84,7 @@ const Register = () => {
           </p>
 
           <form
-            className='py-8 flex flex-col gap-5'
+            className='py-5 flex flex-col gap-5'
             onSubmit={handleSubmit(onSubmit)}
           >
             <div className='w-full flex flex-col lg:flex-row gap-1 md:gap-2'>
@@ -150,6 +158,18 @@ const Register = () => {
                 }
               />
             </div>
+              <label
+                className='flex items-center gap-1 text-base text-ascent-2 hover:text-ascent-1 cursor-pointer my-4'
+                htmlFor='imgUpload'
+              >Upload your Profile Picture
+                <input
+                  type='file'
+                  className=''
+                  id='imgUpload'
+                  onChange={(e) => handleSelect(e)}
+                  accept='.jpg, .png, .jpeg'
+                /> 
+              </label>
 
             {errMsg?.message && (
               <span
@@ -184,7 +204,7 @@ const Register = () => {
             </Link>
           </p>
         </div>
-        {/* RIGHT */}
+        {/* LEFT */}
         <div className='hidden w-1/2 h-full lg:flex flex-col items-center justify-center bg-blue'>
           <div className='relative w-full flex items-center justify-center'>
             <img
@@ -203,7 +223,7 @@ const Register = () => {
               <span className='text-xs font-medium'>Connect</span>
             </div>
 
-            <div className='absolute flex items-center gap-1 bg-white left-12 bottom-6 py-2 px-5 rounded-full'>
+            <div className='absolute flex items-center gap-1 bg-white left-10 bottom-6 py-2 px-5 rounded-full'>
               <AiOutlineInteraction />
               <span className='text-xs font-medium'>Interact</span>
             </div>
@@ -211,7 +231,7 @@ const Register = () => {
 
           <div className='mt-16 text-center'>
             <p className='text-white text-base'>
-              Connect with friends & have share for fun
+              Connecting Friends, Sharing Joy: Where Fun Never Ends!
             </p>
             <span className='text-sm text-white/80'>
               Share memories with friends and the world.

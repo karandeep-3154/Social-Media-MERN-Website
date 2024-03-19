@@ -66,14 +66,14 @@ const Login = () => {
               <TbSocial />
             </div>
             <span className='text-2xl text-[#065ad8] font-semibold'>
-              ShareFun
+              Connectify
             </span>
           </div>
 
           <p className='text-ascent-1 text-base font-semibold'>
             Log in to your account
           </p>
-          <span className='text-sm mt-2 text-ascent-2'>Welcome back</span>
+          <span className='text-sm mt-2 text-ascent-2 '>Welcome back</span>
 
           <form
             className='py-8 flex flex-col gap-5='
@@ -107,7 +107,7 @@ const Login = () => {
 
             <Link
               to='/reset-password'
-              className='text-sm text-right text-blue font-semibold'
+              className='text-sm mt-2 mb-2 text-right text-blue font-semibold'
             >
               Forgot Password ?
             </Link>
@@ -159,12 +159,12 @@ const Login = () => {
               <span className='text-xs font-medium'>Share</span>
             </div>
 
-            <div className='absolute flex items-center gap-1 bg-white left-10 top-6 py-2 px-5 rounded-full'>
+            <div className='absolute flex items-center gap-1 bg-white left-9 top-6 py-2 px-5 rounded-full'>
               <ImConnection />
               <span className='text-xs font-medium'>Connect</span>
             </div>
 
-            <div className='absolute flex items-center gap-1 bg-white left-12 bottom-6 py-2 px-5 rounded-full'>
+            <div className='absolute flex items-center gap-1 bg-white left-10 bottom-6 py-2 px-5 rounded-full'>
               <AiOutlineInteraction />
               <span className='text-xs font-medium'>Interact</span>
             </div>
@@ -172,7 +172,7 @@ const Login = () => {
 
           <div className='mt-16 text-center'>
             <p className='text-white text-base'>
-              Connect with friends & have share for fun
+              Connecting Friends, Sharing Joy: Where Fun Never Ends!
             </p>
             <span className='text-sm text-white/80'>
               Share memories with friends and the world.
