@@ -70,7 +70,7 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
 //userId is id of user whose profile current user is trying to open
     try {
 
-      if(userId._id == user._id)
+      if(userId._id === user._id)
       return;
 
       const res = await apiRequest({
