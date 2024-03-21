@@ -123,7 +123,7 @@ const CommentForm = ({ user, id, replyAt, getComments }) => {
       <div className='w-full flex items-center gap-2 py-4'>
         <img
           src={user?.profileUrl ?? NoProfile}
-          alt='User Image'
+          alt='User '
           className='w-10 h-10 rounded-full object-cover'
         />
 
@@ -206,10 +206,10 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
 //userId is id of user whose profile current user is trying to open
     try {
 
-      if(userId._id == user._id)
+      if(userId._id === user._id)
       return;
 
-      const res = await apiRequest({
+      await apiRequest({
         url: "/users/profile-view",
         method: "POST",
         data: {id: userId, user},
@@ -284,7 +284,7 @@ const PostCard = ({ post, user, deletePost, likePost }) => {
         {post?.image && (
           <img
             src={post?.image}
-            alt='post image'
+            alt='post'
             className='w-full mt-2 rounded-lg'
           />
         )}

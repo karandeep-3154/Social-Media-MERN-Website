@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { LiaEditSolid } from "react-icons/lia";
@@ -25,17 +25,15 @@ const ProfileCard = ({ user }) => {
    const handleFriendRequest = async() => {
 
     try {
-      const res = await sendFriendRequest(data.token, user._id);
+      await sendFriendRequest(data.token, user._id);
       checkFriendRequestSent();
       } 
     catch (error) {
     console.log(error);
       }
   }
-
-  const checkFriendRequestSent = async() => {
+const checkFriendRequestSent = useCallback(async () => {
     try {
-      // console.log(user._id, data._id);
       const res = await apiRequest({
         url: "/users/check-friend-request-sent/",
         token: data.token,
@@ -46,16 +44,14 @@ const ProfileCard = ({ user }) => {
         }
       });
       setMutualFriends(res.message);
-      // console.log(res);
-      } 
-    catch (error) {
-    console.log(error);
-      }
-  }
+    } catch (error) {
+      console.log(error);
+    }
+  }, [user, data]);
 
   useEffect(() => {
     checkFriendRequestSent();
-  }, [user]);
+  }, [user, checkFriendRequestSent]);
 
   return (
     <div>

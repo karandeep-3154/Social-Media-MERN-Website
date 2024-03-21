@@ -14,7 +14,7 @@ const TopBar = () => {
 
   const {theme} = useSelector(state => state.theme);
   const {user} = useSelector(state => state.user);
-  const {register, reset, handleSubmit, formState:{errors}} = useForm();
+  const {register, reset, handleSubmit} = useForm();
 
 
   const handleSearch = async(data) => {
