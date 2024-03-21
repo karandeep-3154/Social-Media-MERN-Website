@@ -172,6 +172,7 @@ const Home = () => {
     fetchPost();
     fetchFriendRequests();
     fetchSuggestedFriends();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -180,6 +181,7 @@ const Home = () => {
     fetchPost();
     fetchFriendRequests();
     fetchSuggestedFriends();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [edit]);
 
 //Edit is a state in userSlice which is set to true when the user clicks the edit button in ProfileCard. When the edit state changes, the useEffect hook will run again and fetch the user data from the server. For example - when user updates profile picture then after updating, edit will become false, so if we again fetch posts, the post which this user itself had posted will come with updated profile picture otherwise it will come with the old profile picture.

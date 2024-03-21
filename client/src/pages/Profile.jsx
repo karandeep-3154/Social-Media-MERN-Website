@@ -39,6 +39,7 @@ const Profile = () => {
     setLoading(true);
     getUser();
     getPosts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[id])
 
   const handleDelete = async(id) => {

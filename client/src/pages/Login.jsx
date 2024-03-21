@@ -115,7 +115,7 @@ const Login = () => {
             {errMsg?.message && (
               <span
                 className={`text-sm ${
-                  errMsg?.status == "failed"
+                  errMsg?.status === "failed"
                     ? "text-[#f64949fe]"
                     : "text-[#2ba150fe]"
                 } mt-0.5`}
@@ -150,7 +150,7 @@ const Login = () => {
           <div className='relative w-full flex items-center justify-center'>
             <img
               src={BgImage}
-              alt='Bg Image'
+              alt='Bg'
               className='w-48 2xl:w-64 h-48 2xl:h-64 rounded-full object-cover'
             />
 
