@@ -32,7 +32,7 @@ const userSchema = new mongoose.Schema(
     So its type is Schema.Types.ObjectId and it is referring a particular User instance*/
 
     views: [{ type: String }],
-    verified: { type: Boolean, default: false },
+    verified: { type: Boolean, default: true },
   },
   { timestamps: true }
 );
