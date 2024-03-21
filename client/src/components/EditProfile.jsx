@@ -5,7 +5,7 @@ import { useDispatch, useSelector } from "react-redux";
 import TextInput from "./TextInput";
 import Loading from "./Loading";
 import CustomButton from "./CustomButton";
-import { apiRequest, fetchPosts, handleFileUpload } from "../Utils/index.js";
+import { apiRequest, handleFileUpload } from "../Utils/index.js";
 import { UpdateProfile, userLogin } from "../redux/userSlice";
 
 const EditProfile = () => {

@@ -73,7 +73,7 @@ export const fetchPosts = async(token, dispatch, uri, data) => {
       if(userId._id === user._id)
       return;
 
-      const res = await apiRequest({
+      await apiRequest({
         url: "/users/profile-view",
         method: "POST",
         data: {id: userId, user},
@@ -91,7 +91,7 @@ export const likePost = async({uri, token}) => {
 // console.log(uri)
     try {
         
-        const res = await apiRequest({
+        await apiRequest({
             url: uri,
             token: token,
             method: "POST"
@@ -109,7 +109,7 @@ export const deletePost = async(id, token) => {
 
     try {
         
-        const res = await apiRequest({
+        await apiRequest({
             url: '/posts/' + id,
             token: token,
             method: "DELETE"
