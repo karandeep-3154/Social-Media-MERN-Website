@@ -169,7 +169,7 @@ const Register = () => {
                 /> 
               </label>
 
-            {errMsg?.message && (
+            {/* {errMsg?.message && (
               <span
                 className={`text-sm ${
                   errMsg?.status === "failed"
@@ -179,7 +179,7 @@ const Register = () => {
               >
                 {errMsg?.message}
               </span>
-            )}
+            )} */}
 
             {isSubmitting ? (
               <Loading />
