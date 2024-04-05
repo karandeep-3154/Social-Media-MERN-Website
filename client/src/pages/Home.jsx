@@ -347,8 +347,9 @@ const Home = () => {
                         <p className='text-base font-medium text-ascent-1'>
                           {from?.firstName} {from?.lastName}
                         </p>
+                        
                         <span className='text-sm text-ascent-2'>
-                          {from?.profession ?? "No Profession"}
+                          {from?.profession ?? ""}
                         </span>
                       </div>
                     </div>
@@ -400,7 +401,7 @@ const Home = () => {
                           {friend?.firstName} {friend?.lastName}
                         </p>
                         <span className='text-sm text-ascent-2'>
-                          {friend?.profession ?? "No Profession"}
+                          {friend?.profession ?? "Doctor"}
                         </span>
                       </div>
                     </div>

@@ -35,16 +35,17 @@ token;
     <hr>
     <h4>Hi ${firstName} ${lastName},</h4>
     <p>
-        Please verify your email address so we can know that it's really you.
+        Please Verify your Email Address so that we can know that It's Really You.
         <br>
     <p>This link <b>expires in 1 hour</b></p>
     <br>
     <a href=${link}
-        style="color: #fff; padding: 14px; text-decoration: none; background-color: #000;  border-radius: 8px; font-size: 18px;">Verify
+        style="color: #fff; padding: 14px; text-decoration: none; background-color: #012893;  border-radius: 8px; font-size: 18px;">Verify
         Email Address</a>
     </p>
-    <div style="margin-top: 20px;">
+    <div style="margin-top: 40px;">
         <h5>Best Regards</h5>
+        
         <h5>Karandeep Singh</h5>
     </div>
 </div>`,

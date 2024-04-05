@@ -426,12 +426,9 @@ const friendRequestsReceived2 = await friendRequest.find({
     // excludedUsers.push(...friendIds);
 
     // Query users excluding the current user, users with pending friend requests, and already friends
-    const suggestedFriends = await Users.find({
-      _id: { $nin: excludedUsers },
-    })
-    .limit(15)
-    .select("firstName lastName profileUrl profession");
-
+   const suggestedFriends = await Users.find({
+    _id: { $nin: excludedUsers },
+}).sort({ createdAt: -1 }).select("firstName lastName profileUrl profession");
     res.status(200).json({
       success: true,
       data: suggestedFriends,

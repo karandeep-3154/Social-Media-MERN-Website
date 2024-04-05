@@ -42,7 +42,7 @@ const TopBar = () => {
             <div className='p-1 md:p-2 bg-[#065ad8] rounded text-white'>
                 <TbSocial />
             </div>
-            <span className='text-xl md:text-2xl text-[#065ad8] font-semibold '>Connectify</span>
+            <span className='text-xl md:text-2xl text-[#065ad8] font-semibold '>Sociate</span>
         </Link>
 
         <form className='hidden md:flex items-center justify-center ' onSubmit={handleSubmit(handleSearch)}>

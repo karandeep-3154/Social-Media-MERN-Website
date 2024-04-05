@@ -66,7 +66,7 @@ const Login = () => {
               <TbSocial />
             </div>
             <span className='text-2xl text-[#065ad8] font-semibold'>
-              Connectify
+              Sociate
             </span>
           </div>
 
@@ -97,7 +97,7 @@ const Login = () => {
               label='Password'
               placeholder='Password'
               type='password'
-              styles='w-full rounded-full'
+              styles='w-full rounded-full '
               labelStyle='ml-2'
               register={register("password", {
                 required: "Password is required!",
@@ -114,7 +114,7 @@ const Login = () => {
 
             {errMsg?.message && (
               <span
-                className={`text-sm ${
+                className={`text-sm mb-4 ${
                   errMsg?.status === "failed"
                     ? "text-[#f64949fe]"
                     : "text-[#2ba150fe]"
